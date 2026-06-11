@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Dự đoán rating từ nội dung review tiếng Anh và kiểm tra mức độ nhất quán với số sao người dùng chọn.">
+    <meta name="theme-color" content="#18342a">
+    <title>Phân tích độ nhất quán review</title>
+    <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <main id="main-content">
+        <section class="hero">
+            <div class="hero-copy">
+                <p class="eyebrow">Predict Rating from English Text</p>
+                <h1>Review Consistency Checker</h1>
+                <p class="hero-description">
+                    Mô hình dự đoán rating từ 1 đến 5 dựa trên nội dung review tiếng Anh và so sánh với rating thực tế của người dùng để phát hiện các trường hợp không nhất quán.
+                </p>
+            </div>
+            <aside class="scope-note">
+                <p class="scope-label">Scope & Limitations</p>
+                <p>
+                    Mô hình chỉ phân tích độ nhất quán giữa nội dung review tiếng Anh và rating được chọn. Kết quả không dùng để kết luận một review là giả mạo.
+                </p>
+            </aside>
+        </section>
+
+        <section class="workspace" aria-labelledby="analysis-title">
+            <article class="analysis-panel">
+                <div class="section-heading">
+                    <div>
+                        <p class="section-index">01</p>
+                        <h2 id="analysis-title">Analyze Single Review</h2>
+                    </div>
+                    <p>Max 5,000 characters</p>
+                </div>
+
+                <div class="example-row" aria-label="Review mẫu">
+                    <span>Quick Fill:</span>
+                    <button type="button" class="text-button example-button"
+                        data-example-type="positive">
+                        Consistent Positive
+                    </button>
+                    <button type="button" class="text-button example-button"
+                        data-example-type="neutral">
+                        Consistent Neutral
+                    </button>
+                    <button type="button" class="text-button example-button"
+                        data-example-type="contradictory">
+                        Contradictory
+                    </button>
+                </div>
+
+                <form id="predict-form" novalidate>
+                    <div class="form-field">
+                        <div class="label-row">
+                            <label for="review-text">Review Text</label>
+                            <span id="character-count">0 / 5000</span>
+                        </div>
+                        <textarea
+                            id="review-text"
+                            name="review_text"
+                            rows="7"
+                            maxlength="5000"
+                            required
+                            aria-describedby="form-error"
+                            placeholder="Write an English restaurant review..."
+                        ></textarea>
+                    </div>
+
+                    <fieldset class="rating-field">
+                        <legend>Actual Rating</legend>
+                        <div class="rating-options">
+                            <label><input type="radio" name="actual_rating" value="1"><span>1★</span></label>
+                            <label><input type="radio" name="actual_rating" value="2"><span>2★</span></label>
+                            <label><input type="radio" name="actual_rating" value="3"><span>3★</span></label>
+                            <label><input type="radio" name="actual_rating" value="4"><span>4★</span></label>
+                            <label><input type="radio" name="actual_rating" value="5" checked><span>5★</span></label>
+                        </div>
+                    </fieldset>
+
+                    <div id="form-error" class="form-error" role="alert" aria-live="polite"></div>
+                    <button type="submit" class="primary-button" id="submit-button">
+                        Analyze Review
+                    </button>
+                </form>
+            </article>
+
+            <aside class="result-panel" id="result-panel" aria-live="polite">
+                <div class="empty-result" id="empty-result">
+                    <p class="section-index">02</p>
+                    <h2>Analysis Result</h2>
+                    <p>
+                        Analysis results will display predicted rating, gap, confidence scores, and consistency status.
+                    </p>
+                </div>
+
+                <div class="result-content hidden" id="result-content">
+                    <div class="result-header">
+                        <div>
+                            <p class="section-index">02</p>
+                            <h2>Analysis Result</h2>
+                        </div>
+                        <span class="result-status" id="result-status"></span>
+                    </div>
+
+                    <p class="result-message" id="result-message"></p>
+
+                    <div class="metric-grid">
+                        <div>
+                            <span>Actual Rating</span>
+                            <strong id="actual-rating-result">0</strong>
+                        </div>
+                        <div>
+                            <span>Predicted Rating</span>
+                            <strong id="predicted-rating-result">0</strong>
+                        </div>
+                        <div>
+                            <span>Rating Gap</span>
+                            <strong id="rating-gap-result">0</strong>
+                        </div>
+                        <div>
+                            <span>Top Model Score</span>
+                            <strong id="top-score-result">0%</strong>
+                        </div>
+                    </div>
+
+                    <div class="score-section">
+                        <div class="score-title">
+                            <h3>Model Score by Rating</h3>
+                            <span>Uncalibrated probability scores</span>
+                        </div>
+                        <div id="score-bars" class="score-bars"></div>
+                    </div>
+
+                    <details class="cleaned-review">
+                        <summary>Preprocessed Review Text</summary>
+                        <p id="cleaned-text-result"></p>
+                        <span id="token-count-result"></span>
+                    </details>
+                </div>
+            </aside>
+        </section>
+
+        <section class="dashboard" aria-labelledby="dashboard-title">
+            <div class="section-heading dashboard-heading">
+                <div>
+                    <p class="section-index">03</p>
+                    <h2 id="dashboard-title">Dataset & Model Quality</h2>
+                </div>
+                <p id="model-trained-at">Loading metadata...</p>
+            </div>
+
+            <div class="data-summary" id="data-summary" aria-live="polite">
+                <div><span>Original Rows</span><strong id="total-raw">0</strong></div>
+                <div><span>Training Rows</span><strong id="total-clean">0</strong></div>
+                <div><span>Duplicates Removed</span><strong id="duplicates-removed">0</strong></div>
+                <div><span>Empty Reviews</span><strong id="empty-reviews">0</strong></div>
+            </div>
+
+            <div class="dashboard-grid">
+                <article class="dashboard-block">
+                    <div class="block-heading">
+                        <h3>Rating Distribution (Cleaned)</h3>
+                        <p>5-star class remains the majority</p>
+                    </div>
+                    <div class="distribution-chart" id="distribution-chart"></div>
+                </article>
+
+                <article class="dashboard-block">
+                    <div class="block-heading">
+                        <h3>Holdout Performance</h3>
+                        <p>Optimized for Macro-F1 & Rating MAE</p>
+                    </div>
+                    <div class="performance-grid">
+                        <div><span>Macro-F1</span><strong id="macro-f1">0</strong></div>
+                        <div><span>MAE</span><strong id="mae">0</strong></div>
+                        <div><span>Within 1-Star Error</span><strong id="within-one">0%</strong></div>
+                        <div><span>Recall (2-Star Class)</span><strong id="recall-two">0%</strong></div>
+                    </div>
+                </article>
+            </div>
+
+            <article class="dashboard-block matrix-block">
+                <div class="block-heading">
+                    <h3>Confusion Matrix</h3>
+                    <p>Rows represent actual ratings, columns represent predicted ratings</p>
+                </div>
+                <div class="matrix-shell">
+                    <div id="confusion-matrix" class="confusion-matrix"></div>
+                </div>
+            </article>
+
+            <article class="dashboard-block comparison-block">
+                <div class="block-heading">
+                    <h3>Baseline Comparison</h3>
+                    <p>Cross-validation results on the training set</p>
+                </div>
+                <div class="table-shell">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Model</th>
+                                <th>Accuracy</th>
+                                <th>Macro-F1</th>
+                                <th>MAE</th>
+                            </tr>
+                        </thead>
+                        <tbody id="comparison-table"></tbody>
+                    </table>
+                </div>
+            </article>
+        </section>
+    </main>
+
+    <script src="/static/js/main.js"></script>
+</body>
+</html>

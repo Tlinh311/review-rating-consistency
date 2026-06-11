@@ -1,0 +1,30 @@
+# Cac thu muc san pham cu
+/boots
+/fashionjewellery
+/formal_shoes
+/jackets_coats
+/jeans
+/sneakers
+/swimwear
+/weddingandengagement
+
+# Moi truong ao Python
+.venv/
+venv/
+ENV/
+env/
+
+# Python cache va file compile
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Test cache
+.pytest_cache/
+
+# Thu muc cau hinh cua IDE
+.vscode/
+.idea/

@@ -1,0 +1,262 @@
+{
+  "schema_version": 1,
+  "model_name": "review_rating_logistic_regression",
+  "created_at": "2026-06-09T12:52:28.200081+00:00",
+  "dataset": {
+    "path": "data\\raw\\restaurant_reviews.csv",
+    "sha256": "8c3b3d5335750525a5b30c0cdb12afc50504f702572bb6bd5e70b01a2dce4beb"
+  },
+  "libraries": {
+    "python": "3.12.3",
+    "numpy": "2.4.6",
+    "pandas": "3.0.3",
+    "scikit_learn": "1.9.0",
+    "joblib": "1.5.3"
+  },
+  "split": {
+    "strategy": "StratifiedGroupKFold",
+    "group": "text_clean",
+    "random_state": 42,
+    "train_rows": 7449,
+    "test_rows": 1862,
+    "group_overlap": 0
+  },
+  "features": {
+    "word_tfidf": {
+      "ngram_range": [
+        1,
+        2
+      ],
+      "max_features": 12000,
+      "min_df": 2,
+      "max_df": 0.95,
+      "sublinear_tf": true
+    },
+    "character_tfidf": {
+      "analyzer": "char_wb",
+      "ngram_range": [
+        3,
+        5
+      ],
+      "max_features": 20000,
+      "min_df": 2,
+      "sublinear_tf": true
+    }
+  },
+  "selected_parameters": {
+    "weight_power": 1.0,
+    "C": 0.25
+  },
+  "class_weights": {
+    "1": 1.0922287390029326,
+    "2": 2.723583180987203,
+    "3": 1.5698630136986302,
+    "4": 0.792868547099521,
+    "5": 0.5497416974169742
+  },
+  "uncertainty_threshold": {
+    "value": 0.36,
+    "coverage": 0.688011813666264,
+    "accuracy": 0.7014634146341463
+  },
+  "tuning_results": [
+    {
+      "weight_power": 1.0,
+      "C": 0.25,
+      "macro_f1": 0.548610442052083,
+      "weighted_f1": 0.6202916544276355,
+      "mae": 0.4800626509702935,
+      "fit_seconds": 1.3565985333334538
+    },
+    {
+      "weight_power": 1.0,
+      "C": 0.5,
+      "macro_f1": 0.5471068232371749,
+      "weighted_f1": 0.6213737340363662,
+      "mae": 0.47617015926615736,
+      "fit_seconds": 1.7968653333336988
+    },
+    {
+      "weight_power": 0.8,
+      "C": 0.25,
+      "macro_f1": 0.5458872260861537,
+      "weighted_f1": 0.6232062505516366,
+      "mae": 0.47576579848508266,
+      "fit_seconds": 1.4371607666677544
+    },
+    {
+      "weight_power": 0.8,
+      "C": 0.5,
+      "macro_f1": 0.5455703419015682,
+      "weighted_f1": 0.623327061282032,
+      "mae": 0.4689195111205129,
+      "fit_seconds": 1.926736966665582
+    },
+    {
+      "weight_power": 1.0,
+      "C": 1.0,
+      "macro_f1": 0.5417488771117035,
+      "weighted_f1": 0.6188308207052325,
+      "mae": 0.4752309221690986,
+      "fit_seconds": 2.543734166666885
+    },
+    {
+      "weight_power": 0.8,
+      "C": 1.0,
+      "macro_f1": 0.538870425593963,
+      "weighted_f1": 0.6191491825044255,
+      "mae": 0.47402221942285466,
+      "fit_seconds": 2.3438542999998995
+    },
+    {
+      "weight_power": 0.65,
+      "C": 1.0,
+      "macro_f1": 0.5366577528250808,
+      "weighted_f1": 0.618854100129221,
+      "mae": 0.47361834547657305,
+      "fit_seconds": 2.4416318333326976
+    },
+    {
+      "weight_power": 0.65,
+      "C": 0.5,
+      "macro_f1": 0.5365087173667275,
+      "weighted_f1": 0.6203996475239032,
+      "mae": 0.4710666397757226,
+      "fit_seconds": 2.3868782666662205
+    },
+    {
+      "weight_power": 0.65,
+      "C": 0.25,
+      "macro_f1": 0.5344949408073538,
+      "weighted_f1": 0.6194723622753071,
+      "mae": 0.47576585257299864,
+      "fit_seconds": 1.390562300000359
+    }
+  ],
+  "model_comparison": [
+    {
+      "name": "weighted_logistic_regression",
+      "accuracy": 0.6168613236676064,
+      "macro_f1": 0.5488727456817477,
+      "weighted_f1": 0.6204413712599621,
+      "mae": 0.4800644381796214,
+      "within_one_star": 0.9299234796616995
+    },
+    {
+      "name": "linear_svm",
+      "accuracy": 0.6010202711773392,
+      "macro_f1": 0.5072136356163336,
+      "weighted_f1": 0.5934683510645548,
+      "mae": 0.5165794066317626,
+      "within_one_star": 0.9134111961337092
+    },
+    {
+      "name": "unweighted_logistic_regression",
+      "accuracy": 0.6265270506108203,
+      "macro_f1": 0.46938724685865835,
+      "weighted_f1": 0.5840636971596881,
+      "mae": 0.5070479258960935,
+      "within_one_star": 0.9092495636998255
+    },
+    {
+      "name": "complement_naive_bayes",
+      "accuracy": 0.6011545173848839,
+      "macro_f1": 0.45272966938283893,
+      "weighted_f1": 0.5615254530942325,
+      "mae": 0.5850449724795275,
+      "within_one_star": 0.881326352530541
+    }
+  ],
+  "holdout_metrics": {
+    "accuracy": 0.6288936627282492,
+    "macro_f1": 0.5737422366903642,
+    "weighted_f1": 0.6348586312239375,
+    "balanced_accuracy": 0.582519915624701,
+    "mae": 0.45918367346938777,
+    "within_one_star": 0.9366272824919442,
+    "recall_per_class": {
+      "1": 0.7448680351906158,
+      "2": 0.45255474452554745,
+      "3": 0.4345991561181435,
+      "4": 0.5553191489361702,
+      "5": 0.725258493353028
+    },
+    "confusion_matrix": [
+      [
+        254,
+        61,
+        18,
+        5,
+        3
+      ],
+      [
+        47,
+        62,
+        25,
+        2,
+        1
+      ],
+      [
+        26,
+        40,
+        103,
+        57,
+        11
+      ],
+      [
+        5,
+        13,
+        84,
+        261,
+        107
+      ],
+      [
+        10,
+        9,
+        15,
+        152,
+        491
+      ]
+    ]
+  },
+  "final_fit_seconds": 5.949041100000613,
+  "data_report": {
+    "total_raw": 10000,
+    "total_clean": 9311,
+    "removed_total": 689,
+    "missing_review": 45,
+    "missing_rating": 38,
+    "non_numeric_rating": 1,
+    "outside_rating": 0,
+    "half_star_count": 144,
+    "empty_after_cleaning": 16,
+    "exact_duplicate_rows": 36,
+    "duplicate_review_rows": 591,
+    "duplicate_cleaned_text_rows_before_deduplication": 791,
+    "duplicate_pairs_removed": 627,
+    "conflicting_rating_groups": 45,
+    "rating_distribution": {
+      "1": 1705,
+      "2": 684,
+      "3": 1186,
+      "4": 2349,
+      "5": 3387
+    },
+    "rating_percentages": {
+      "1": 18.31,
+      "2": 7.35,
+      "3": 12.74,
+      "4": 25.23,
+      "5": 36.38
+    },
+    "mostly_empty_columns": [
+      "7514"
+    ]
+  },
+  "limitations": [
+    "Mô hình đo độ nhất quán giữa nội dung tiếng Anh và rating.",
+    "Kết quả không chứng minh review là giả hoặc spam.",
+    "Model score là điểm nội bộ chưa được hiệu chỉnh thành xác suất.",
+    "Review quá ngắn hoặc model score thấp được trả về inconclusive."
+  ]
+}

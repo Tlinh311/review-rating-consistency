@@ -1,0 +1,16 @@
+.git
+.gitignore
+.dockerignore
+.venv
+venv
+env
+ENV
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache
+.vscode
+.idea
+*.docx
+~$*.docx
