@@ -111,10 +111,10 @@ def create_app(
         yield
 
     application = FastAPI(
-        title="API phân tích độ nhất quán review",
+        title="Review Consistency Analysis API",
         description=(
-            "Dự đoán rating từ review tiếng Anh và đánh giá mức độ "
-            "nhất quán với rating người dùng."
+            "Predict ratings from English reviews and assess "
+            "consistency with user ratings."
         ),
         version="2.0.0",
         lifespan=lifespan,
@@ -126,7 +126,7 @@ def create_app(
         if not index_path.exists():
             raise HTTPException(
                 status_code=404,
-                detail="Không tìm thấy giao diện web.",
+                detail="Web interface not found.",
             )
         return FileResponse(index_path)
 
@@ -136,7 +136,7 @@ def create_app(
             raise HTTPException(
                 status_code=503,
                 detail=application.state.resource_error
-                or "Model chưa sẵn sàng.",
+                or "Model not ready.",
             )
 
         try:
@@ -201,7 +201,7 @@ def create_app(
         except Exception as error:
             raise HTTPException(
                 status_code=500,
-                detail=f"Không thể sinh dữ liệu mẫu: {str(error)}"
+                detail=f"Cannot generate sample data: {str(error)}"
             )
 
 
@@ -212,7 +212,7 @@ def create_app(
                 status_code=503,
                 detail=application.state.stats_error
                 or application.state.resource_error
-                or "Thống kê chưa sẵn sàng.",
+                or "Statistics not ready.",
             )
         return application.state.stats
 
@@ -223,7 +223,7 @@ def create_app(
             raise HTTPException(
                 status_code=503,
                 detail=application.state.resource_error
-                or "Model metadata chưa sẵn sàng.",
+                or "Model metadata not ready.",
             )
         return {
             "model_name": metadata["model_name"],
@@ -247,7 +247,7 @@ def create_app(
                     "model_loaded": False,
                     "scikit_learn_runtime": sklearn.__version__,
                     "detail": application.state.resource_error
-                    or "Model chưa sẵn sàng.",
+                    or "Model not ready.",
                 },
             )
         return {

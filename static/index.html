@@ -1,28 +1,39 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Dự đoán rating từ nội dung review tiếng Anh và kiểm tra mức độ nhất quán với số sao người dùng chọn.">
+    <meta name="description" content="Predict ratings from English review content and check consistency with user-selected star ratings.">
     <meta name="theme-color" content="#18342a">
-    <title>Phân tích độ nhất quán review</title>
+    <title>Review Consistency Checker</title>
     <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
+    <header class="app-header" role="banner">
+        <div class="system-status-container">
+            <span class="system-status" id="system-status" aria-hidden="true"></span>
+            <span id="system-status-text" data-i18n="header.status_checking">Checking model status...</span>
+        </div>
+        <div class="lang-selector" aria-label="Language Selector">
+            <button type="button" class="lang-btn" data-lang="en" aria-label="English Language">EN</button>
+            <button type="button" class="lang-btn" data-lang="vi" aria-label="Vietnamese Language">VI</button>
+        </div>
+    </header>
+
     <main id="main-content">
         <section class="hero">
             <div class="hero-copy">
-                <p class="eyebrow">Predict Rating from English Text</p>
-                <h1>Review Consistency Checker</h1>
-                <p class="hero-description">
-                    Mô hình dự đoán rating từ 1 đến 5 dựa trên nội dung review tiếng Anh và so sánh với rating thực tế của người dùng để phát hiện các trường hợp không nhất quán.
+                <p class="eyebrow" data-i18n="hero.eyebrow">Predict Rating from English Text</p>
+                <h1 data-i18n="hero.title">Review Consistency Checker</h1>
+                <p class="hero-description" data-i18n="hero.description">
+                    The model predicts rating from 1 to 5 based on English review content and compares it with the actual user rating to detect inconsistencies.
                 </p>
             </div>
             <aside class="scope-note">
-                <p class="scope-label">Scope & Limitations</p>
-                <p>
-                    Mô hình chỉ phân tích độ nhất quán giữa nội dung review tiếng Anh và rating được chọn. Kết quả không dùng để kết luận một review là giả mạo.
+                <p class="scope-label" data-i18n="scope.label">Scope & Limitations</p>
+                <p data-i18n="scope.text">
+                    The model only analyzes the consistency between the English review content and the selected rating. The results are not intended to conclude that a review is fake.
                 </p>
             </aside>
         </section>
@@ -32,23 +43,23 @@
                 <div class="section-heading">
                     <div>
                         <p class="section-index">01</p>
-                        <h2 id="analysis-title">Analyze Single Review</h2>
+                        <h2 id="analysis-title" data-i18n="analysis.title">Analyze Single Review</h2>
                     </div>
-                    <p>Max 5,000 characters</p>
+                    <p data-i18n="analysis.max_chars">Max 5,000 characters</p>
                 </div>
 
-                <div class="example-row" aria-label="Review mẫu">
-                    <span>Quick Fill:</span>
+                <div class="example-row" aria-label="Review samples">
+                    <span data-i18n="analysis.quick_fill">Quick Fill:</span>
                     <button type="button" class="text-button example-button"
-                        data-example-type="positive">
+                        data-example-type="positive" data-i18n="analysis.positive">
                         Consistent Positive
                     </button>
                     <button type="button" class="text-button example-button"
-                        data-example-type="neutral">
+                        data-example-type="neutral" data-i18n="analysis.neutral">
                         Consistent Neutral
                     </button>
                     <button type="button" class="text-button example-button"
-                        data-example-type="contradictory">
+                        data-example-type="contradictory" data-i18n="analysis.contradictory">
                         Contradictory
                     </button>
                 </div>
@@ -56,7 +67,7 @@
                 <form id="predict-form" novalidate>
                     <div class="form-field">
                         <div class="label-row">
-                            <label for="review-text">Review Text</label>
+                            <label for="review-text" data-i18n="form.label">Review Text</label>
                             <span id="character-count">0 / 5000</span>
                         </div>
                         <textarea
@@ -67,11 +78,12 @@
                             required
                             aria-describedby="form-error"
                             placeholder="Write an English restaurant review..."
+                            data-i18n-placeholder="form.placeholder"
                         ></textarea>
                     </div>
 
                     <fieldset class="rating-field">
-                        <legend>Actual Rating</legend>
+                        <legend data-i18n="form.legend">Actual Rating</legend>
                         <div class="rating-options">
                             <label><input type="radio" name="actual_rating" value="1"><span>1★</span></label>
                             <label><input type="radio" name="actual_rating" value="2"><span>2★</span></label>
@@ -82,7 +94,7 @@
                     </fieldset>
 
                     <div id="form-error" class="form-error" role="alert" aria-live="polite"></div>
-                    <button type="submit" class="primary-button" id="submit-button">
+                    <button type="submit" class="primary-button" id="submit-button" data-i18n="form.submit">
                         Analyze Review
                     </button>
                 </form>
@@ -91,8 +103,8 @@
             <aside class="result-panel" id="result-panel" aria-live="polite">
                 <div class="empty-result" id="empty-result">
                     <p class="section-index">02</p>
-                    <h2>Analysis Result</h2>
-                    <p>
+                    <h2 data-i18n="result.title">Analysis Result</h2>
+                    <p data-i18n="result.empty_text">
                         Analysis results will display predicted rating, gap, confidence scores, and consistency status.
                     </p>
                 </div>
@@ -101,7 +113,7 @@
                     <div class="result-header">
                         <div>
                             <p class="section-index">02</p>
-                            <h2>Analysis Result</h2>
+                            <h2 data-i18n="result.title">Analysis Result</h2>
                         </div>
                         <span class="result-status" id="result-status"></span>
                     </div>
@@ -110,33 +122,33 @@
 
                     <div class="metric-grid">
                         <div>
-                            <span>Actual Rating</span>
+                            <span data-i18n="result.label_actual">Actual Rating</span>
                             <strong id="actual-rating-result">0</strong>
                         </div>
                         <div>
-                            <span>Predicted Rating</span>
+                            <span data-i18n="result.label_predicted">Predicted Rating</span>
                             <strong id="predicted-rating-result">0</strong>
                         </div>
                         <div>
-                            <span>Rating Gap</span>
+                            <span data-i18n="result.label_gap">Rating Gap</span>
                             <strong id="rating-gap-result">0</strong>
                         </div>
                         <div>
-                            <span>Top Model Score</span>
+                            <span data-i18n="result.label_top_score">Top Model Score</span>
                             <strong id="top-score-result">0%</strong>
                         </div>
                     </div>
 
                     <div class="score-section">
                         <div class="score-title">
-                            <h3>Model Score by Rating</h3>
-                            <span>Uncalibrated probability scores</span>
+                            <h3 data-i18n="result.score_title">Model Score by Rating</h3>
+                            <span data-i18n="result.score_subtitle">Uncalibrated probability scores</span>
                         </div>
                         <div id="score-bars" class="score-bars"></div>
                     </div>
 
                     <details class="cleaned-review">
-                        <summary>Preprocessed Review Text</summary>
+                        <summary data-i18n="result.details_summary">Preprocessed Review Text</summary>
                         <p id="cleaned-text-result"></p>
                         <span id="token-count-result"></span>
                     </details>
@@ -148,45 +160,45 @@
             <div class="section-heading dashboard-heading">
                 <div>
                     <p class="section-index">03</p>
-                    <h2 id="dashboard-title">Dataset & Model Quality</h2>
+                    <h2 id="dashboard-title" data-i18n="dashboard.title">Dataset & Model Quality</h2>
                 </div>
                 <p id="model-trained-at">Loading metadata...</p>
             </div>
 
             <div class="data-summary" id="data-summary" aria-live="polite">
-                <div><span>Original Rows</span><strong id="total-raw">0</strong></div>
-                <div><span>Training Rows</span><strong id="total-clean">0</strong></div>
-                <div><span>Duplicates Removed</span><strong id="duplicates-removed">0</strong></div>
-                <div><span>Empty Reviews</span><strong id="empty-reviews">0</strong></div>
+                <div><span data-i18n="dashboard.stats_raw">Original Rows</span><strong id="total-raw">0</strong></div>
+                <div><span data-i18n="dashboard.stats_clean">Training Rows</span><strong id="total-clean">0</strong></div>
+                <div><span data-i18n="dashboard.stats_duplicates">Duplicates Removed</span><strong id="duplicates-removed">0</strong></div>
+                <div><span data-i18n="dashboard.stats_empty">Empty Reviews</span><strong id="empty-reviews">0</strong></div>
             </div>
 
             <div class="dashboard-grid">
                 <article class="dashboard-block">
                     <div class="block-heading">
-                        <h3>Rating Distribution (Cleaned)</h3>
-                        <p>5-star class remains the majority</p>
+                        <h3 data-i18n="dashboard.dist_title">Rating Distribution (Cleaned)</h3>
+                        <p data-i18n="dashboard.dist_subtitle">5-star class remains the majority</p>
                     </div>
                     <div class="distribution-chart" id="distribution-chart"></div>
                 </article>
 
                 <article class="dashboard-block">
                     <div class="block-heading">
-                        <h3>Holdout Performance</h3>
-                        <p>Optimized for Macro-F1 & Rating MAE</p>
+                        <h3 data-i18n="dashboard.perf_title">Holdout Performance</h3>
+                        <p data-i18n="dashboard.perf_subtitle">Optimized for Macro-F1 & Rating MAE</p>
                     </div>
                     <div class="performance-grid">
                         <div><span>Macro-F1</span><strong id="macro-f1">0</strong></div>
                         <div><span>MAE</span><strong id="mae">0</strong></div>
-                        <div><span>Within 1-Star Error</span><strong id="within-one">0%</strong></div>
-                        <div><span>Recall (2-Star Class)</span><strong id="recall-two">0%</strong></div>
+                        <div><span data-i18n="dashboard.perf_within_one">Within 1-Star Error</span><strong id="within-one">0%</strong></div>
+                        <div><span data-i18n="dashboard.perf_recall_two">Recall (2-Star Class)</span><strong id="recall-two">0%</strong></div>
                     </div>
                 </article>
             </div>
 
             <article class="dashboard-block matrix-block">
                 <div class="block-heading">
-                    <h3>Confusion Matrix</h3>
-                    <p>Rows represent actual ratings, columns represent predicted ratings</p>
+                    <h3 data-i18n="dashboard.matrix_title">Confusion Matrix</h3>
+                    <p data-i18n="dashboard.matrix_subtitle">Rows represent actual ratings, columns represent predicted ratings</p>
                 </div>
                 <div class="matrix-shell">
                     <div id="confusion-matrix" class="confusion-matrix"></div>
@@ -195,17 +207,17 @@
 
             <article class="dashboard-block comparison-block">
                 <div class="block-heading">
-                    <h3>Baseline Comparison</h3>
-                    <p>Cross-validation results on the training set</p>
+                    <h3 data-i18n="dashboard.compare_title">Baseline Comparison</h3>
+                    <p data-i18n="dashboard.compare_subtitle">Cross-validation results on the training set</p>
                 </div>
                 <div class="table-shell">
                     <table>
                         <thead>
                             <tr>
-                                <th>Model</th>
-                                <th>Accuracy</th>
-                                <th>Macro-F1</th>
-                                <th>MAE</th>
+                                <th data-i18n="dashboard.table_model">Model</th>
+                                <th data-i18n="dashboard.table_accuracy">Accuracy</th>
+                                <th data-i18n="dashboard.table_macro_f1">Macro-F1</th>
+                                <th data-i18n="dashboard.table_mae">MAE</th>
                             </tr>
                         </thead>
                         <tbody id="comparison-table"></tbody>

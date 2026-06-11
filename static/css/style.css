@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700;800&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;700&display=swap');
+
 :root {
     --ink: #17211d;
     --ink-soft: #53615b;
@@ -16,9 +18,9 @@
     --radius-medium: 0.9rem;
     --shadow: 0 1.25rem 3.5rem rgba(28, 45, 38, 0.09);
 
-    --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    --font-title: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    --font-mono: ui-monospace, SFMono-Regular, "SF Mono", "Cascadia Code", "Segoe UI Mono", "Consolas", monospace;
+    --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-title: 'Outfit', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, "SF Mono", monospace;
 }
 
 * {
@@ -711,6 +713,80 @@ td:not(:first-child) {
     }
 }
 
+.app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: min(92rem, calc(100% - 3rem));
+    margin-inline: auto;
+    padding: 1.5rem 0 0.5rem;
+    border-bottom: 1px solid var(--line);
+}
+
+.system-status-container {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: var(--font-mono);
+    font-size: 0.76rem;
+    color: var(--ink-soft);
+}
+
+.system-status {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--line);
+    display: inline-block;
+    transition: background-color 200ms ease, box-shadow 200ms ease;
+}
+
+.system-status.ready {
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent);
+}
+
+.system-status.error {
+    background: var(--danger);
+    box-shadow: 0 0 8px var(--danger);
+}
+
+.lang-selector {
+    display: flex;
+    background: var(--surface-muted);
+    border-radius: 2rem;
+    padding: 0.25rem;
+    gap: 0.15rem;
+    border: 1px solid var(--line);
+    box-shadow: inset 0 2px 4px rgba(28, 45, 38, 0.05);
+}
+
+.lang-btn {
+    border: 0;
+    background: transparent;
+    padding: 0.4rem 1rem;
+    font-size: 0.78rem;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    border-radius: 2rem;
+    color: var(--ink-soft);
+    cursor: pointer;
+    position: relative;
+    z-index: 1;
+    transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.lang-btn.active {
+    background: var(--accent);
+    color: white;
+    box-shadow: 0 4px 10px rgba(47, 107, 87, 0.25);
+}
+
+.lang-btn:hover:not(.active) {
+    color: var(--ink);
+    background: rgba(23, 33, 29, 0.04);
+}
+
 @media (max-width: 900px) {
     .hero,
     .workspace,
@@ -738,6 +814,13 @@ td:not(:first-child) {
 @media (max-width: 600px) {
     main {
         width: min(100% - 1.5rem, 92rem);
+    }
+
+    .app-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+        padding-top: 1rem;
     }
 
     .brand small,

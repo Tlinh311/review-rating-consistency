@@ -54,7 +54,7 @@ def prepare_dataset(df: pd.DataFrame) -> tuple[pd.DataFrame, dict[str, Any]]:
     missing_columns = sorted(required_columns.difference(df.columns))
     if missing_columns:
         raise ValueError(
-            "Dataset thiếu các cột bắt buộc: " + ", ".join(missing_columns)
+            "Dataset is missing required columns: " + ", ".join(missing_columns)
         )
 
     working = df.copy()

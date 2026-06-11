@@ -39,17 +39,17 @@ def load_resources(
 
     if not metadata_path.exists():
         raise ModelResourceError(
-            f"Không tìm thấy model metadata: {metadata_path}"
+            f"Model metadata not found: {metadata_path}"
         )
     if not model_path.exists():
-        raise ModelResourceError(f"Không tìm thấy model artifact: {model_path}")
+        raise ModelResourceError(f"Model artifact not found: {model_path}")
 
     metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
     trained_version = metadata.get("libraries", {}).get("scikit_learn")
     if trained_version != sklearn.__version__:
         raise ModelResourceError(
-            "Phiên bản scikit-learn không tương thích. "
-            f"Model dùng {trained_version}, runtime dùng {sklearn.__version__}."
+            "Incompatible scikit-learn version. "
+            f"Model uses {trained_version}, runtime uses {sklearn.__version__}."
         )
 
     pipeline = joblib.load(model_path)
@@ -62,7 +62,7 @@ def load_resources(
 def validate_model_name(model_name: str | None) -> None:
     if model_name not in SUPPORTED_MODEL_ALIASES:
         raise ReviewValidationError(
-            f"Model '{model_name}' không được hỗ trợ."
+            f"Model '{model_name}' is not supported."
         )
 
 
@@ -75,12 +75,12 @@ def predict_single_review(
 ) -> dict[str, Any]:
     validate_model_name(model_name)
     if not 1 <= int(actual_rating) <= 5:
-        raise ReviewValidationError("Rating phải nằm trong khoảng từ 1 đến 5.")
+        raise ReviewValidationError("Rating must be between 1 and 5.")
 
     cleaned_text = clean_text(review_text)
     if not cleaned_text:
         raise ReviewValidationError(
-            "Review không còn từ tiếng Anh hợp lệ sau tiền xử lý."
+            "Review has no valid English words after preprocessing."
         )
 
     if pipeline is None or metadata is None:

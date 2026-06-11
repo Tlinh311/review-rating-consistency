@@ -61,6 +61,6 @@ def test_empty_after_cleaning_is_rejected():
             metadata=metadata,
         )
     except ReviewValidationError as error:
-        assert "sau tiền xử lý" in str(error)
+        assert "after preprocessing" in str(error)
     else:
-        raise AssertionError("Review rỗng sau tiền xử lý phải bị từ chối")
+        raise AssertionError("Empty review after preprocessing must be rejected")

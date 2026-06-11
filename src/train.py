@@ -359,10 +359,10 @@ def validate_quality(metrics: dict[str, Any]) -> None:
     if metrics["within_one_star"] < 0.92:
         failures.append("within_one_star < 0.92")
     if metrics["recall_per_class"]["2"] < 0.25:
-        failures.append("recall lớp 2 sao < 0.25")
+        failures.append("recall for class 2 < 0.25")
     if failures:
         raise RuntimeError(
-            "Mô hình không đạt tiêu chí chất lượng: " + ", ".join(failures)
+            "Model failed quality criteria: " + ", ".join(failures)
         )
 
 
@@ -371,7 +371,7 @@ def train_model(
     models_dir: Path = DEFAULT_MODELS_DIR,
 ) -> dict[str, Any]:
     if not data_path.exists():
-        raise FileNotFoundError(f"Không tìm thấy dataset: {data_path}")
+        raise FileNotFoundError(f"Dataset not found: {data_path}")
 
     raw_df = pd.read_csv(data_path)
     clean_df, data_report = prepare_dataset(raw_df)
@@ -381,12 +381,12 @@ def train_model(
 
     overlap = set(train_df["text_clean"]).intersection(test_df["text_clean"])
     if overlap:
-        raise RuntimeError("Phát hiện text_clean trùng giữa train và test")
-
-    print(f"Dữ liệu gốc: {len(raw_df)}")
-    print(f"Dữ liệu sạch: {len(clean_df)}")
+        raise RuntimeError("Duplicate clean_text detected between train and test")
+ 
+    print(f"Original data size: {len(raw_df)}")
+    print(f"Cleaned data size: {len(clean_df)}")
     print(f"Train: {len(train_df)} | Test: {len(test_df)}")
-    print("Đang chọn siêu tham số bằng group cross-validation")
+    print("Tuning hyperparameters using group cross-validation")
 
     selected, tuning_results, oof_pred, oof_prob = (
         tune_logistic_regression(train_df)
@@ -397,11 +397,11 @@ def train_model(
         oof_prob,
     )
     print(
-        "Cấu hình được chọn: "
+        "Selected configuration: "
         f"weight_power={selected['weight_power']}, C={selected['C']}"
     )
-
-    print("Đang so sánh các baseline")
+ 
+    print("Comparing baseline models")
     comparison = compare_baselines(train_df, selected)
 
     pipeline = build_model_pipeline(
@@ -468,10 +468,10 @@ def train_model(
         "final_fit_seconds": final_fit_seconds,
         "data_report": data_report,
         "limitations": [
-            "Mô hình đo độ nhất quán giữa nội dung tiếng Anh và rating.",
-            "Kết quả không chứng minh review là giả hoặc spam.",
-            "Model score là điểm nội bộ chưa được hiệu chỉnh thành xác suất.",
-            "Review quá ngắn hoặc model score thấp được trả về inconclusive.",
+            "The model measures consistency between English text and rating.",
+            "Results do not prove that a review is fake or spam.",
+            "The model score is an internal score not calibrated to probabilities.",
+            "Reviews that are too short or have low model scores return as inconclusive.",
         ],
     }
 
@@ -494,8 +494,8 @@ def train_model(
     )
     temporary_metadata_path.replace(metadata_path)
 
-    print(f"Đã lưu model: {model_path}")
-    print(f"Đã lưu metadata: {metadata_path}")
+    print(f"Saved model to: {model_path}")
+    print(f"Saved metadata to: {metadata_path}")
     print(
         "Holdout macro-F1: "
         f"{holdout_metrics['macro_f1']:.4f} | "
@@ -507,19 +507,19 @@ def train_model(
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Huấn luyện mô hình phân tích độ nhất quán review"
+        description="Train model for review consistency analysis"
     )
     parser.add_argument(
         "--data",
         type=Path,
         default=DEFAULT_DATA_PATH,
-        help="Đường dẫn tới file CSV",
+        help="Path to CSV dataset",
     )
     parser.add_argument(
         "--models-dir",
         type=Path,
         default=DEFAULT_MODELS_DIR,
-        help="Thư mục lưu artifact",
+        help="Directory to save model artifacts",
     )
     return parser.parse_args()
 
@@ -532,5 +532,5 @@ if __name__ == "__main__":
             models_dir=arguments.models_dir.resolve(),
         )
     except Exception as error:
-        print(f"Huấn luyện thất bại: {error}", file=sys.stderr)
+        print(f"Training failed: {error}", file=sys.stderr)
         raise

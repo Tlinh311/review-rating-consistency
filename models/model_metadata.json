@@ -254,9 +254,9 @@
     ]
   },
   "limitations": [
-    "Mô hình đo độ nhất quán giữa nội dung tiếng Anh và rating.",
-    "Kết quả không chứng minh review là giả hoặc spam.",
-    "Model score là điểm nội bộ chưa được hiệu chỉnh thành xác suất.",
-    "Review quá ngắn hoặc model score thấp được trả về inconclusive."
+    "The model measures consistency between English text and rating.",
+    "Results do not prove that a review is fake or spam.",
+    "The model score is an internal score not calibrated to probabilities.",
+    "Reviews that are too short or have low model scores return as inconclusive."
   ]
 }
